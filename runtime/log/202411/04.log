@@ -1,0 +1,69 @@
+[2024-11-04T13:33:13+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:13+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:13+08:00][error] [2]mkdir(): File exists[C:\Users\YANG\Desktop\media\vendor\topthink\framework\src\think\log\driver\File.php:70]
+[2024-11-04T13:33:28+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:28+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:32+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:32+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:34+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:34+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:39+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'media'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:33:59+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:34:01+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:34:02+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:34:03+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:34:03+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)[C:\Users\YANG\Desktop\media\vendor\topthink\think-orm\src\db\PDOConnection.php:836]
+[2024-11-04T13:34:11+08:00][sql] CONNECT:[ UseTime:0.000464s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:11+08:00][sql] SHOW FULL COLUMNS FROM `library` [ RunTime:0.001077s ]
+[2024-11-04T13:34:11+08:00][sql] SELECT * FROM `library` [ RunTime:0.000201s ]
+[2024-11-04T13:34:13+08:00][sql] CONNECT:[ UseTime:0.000514s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:13+08:00][sql] SHOW FULL COLUMNS FROM `library` [ RunTime:0.000866s ]
+[2024-11-04T13:34:13+08:00][sql] SELECT * FROM `library` [ RunTime:0.000210s ]
+[2024-11-04T13:34:13+08:00][sql] CONNECT:[ UseTime:0.000493s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:13+08:00][sql] SHOW FULL COLUMNS FROM `medias` [ RunTime:0.000897s ]
+[2024-11-04T13:34:13+08:00][sql] SELECT 
+              l.*,
+              COUNT(f.id) AS file_count
+           FROM `medias` `l` LEFT JOIN `files` `f` ON `l`.`id`=`f`.`media_id` WHERE  `l`.`library_id` = '1' GROUP BY `l`.`id` [ RunTime:0.001235s ]
+[2024-11-04T13:34:16+08:00][sql] CONNECT:[ UseTime:0.006292s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:16+08:00][sql] SHOW FULL COLUMNS FROM `library` [ RunTime:0.000798s ]
+[2024-11-04T13:34:16+08:00][sql] SELECT * FROM `library` [ RunTime:0.000217s ]
+[2024-11-04T13:34:16+08:00][sql] CONNECT:[ UseTime:0.000460s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:16+08:00][sql] SHOW FULL COLUMNS FROM `medias` [ RunTime:0.000782s ]
+[2024-11-04T13:34:16+08:00][sql] SELECT 
+              l.*,
+              COUNT(f.id) AS file_count
+           FROM `medias` `l` LEFT JOIN `files` `f` ON `l`.`id`=`f`.`media_id` WHERE  `l`.`library_id` = '1' GROUP BY `l`.`id` [ RunTime:0.000679s ]
+[2024-11-04T13:34:36+08:00][sql] CONNECT:[ UseTime:0.015544s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:36+08:00][sql] SHOW FULL COLUMNS FROM `system` [ RunTime:0.000924s ]
+[2024-11-04T13:34:36+08:00][sql] SELECT * FROM `system` WHERE  `id` = 1 LIMIT 1 [ RunTime:0.000288s ]
+[2024-11-04T13:34:46+08:00][sql] CONNECT:[ UseTime:0.000532s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:34:46+08:00][sql] SHOW FULL COLUMNS FROM `files` [ RunTime:0.000981s ]
+[2024-11-04T13:34:46+08:00][sql] SELECT * FROM `files` WHERE  `media_id` = 73 [ RunTime:0.000818s ]
+[2024-11-04T13:35:19+08:00][sql] CONNECT:[ UseTime:0.004798s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:35:19+08:00][sql] SHOW FULL COLUMNS FROM `system` [ RunTime:0.000921s ]
+[2024-11-04T13:35:19+08:00][sql] SELECT * FROM `system` WHERE  `id` = 1 LIMIT 1 [ RunTime:0.000282s ]
+[2024-11-04T13:36:01+08:00][sql] CONNECT:[ UseTime:0.011820s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:36:01+08:00][sql] SHOW FULL COLUMNS FROM `files` [ RunTime:0.001017s ]
+[2024-11-04T13:36:01+08:00][sql] SELECT * FROM `files` WHERE  `media_id` = 75 [ RunTime:0.000783s ]
+[2024-11-04T13:36:10+08:00][sql] CONNECT:[ UseTime:0.000521s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:36:10+08:00][sql] SHOW FULL COLUMNS FROM `system` [ RunTime:0.000863s ]
+[2024-11-04T13:36:10+08:00][sql] SELECT * FROM `system` WHERE  `id` = 1 LIMIT 1 [ RunTime:0.000262s ]
+[2024-11-04T13:36:52+08:00][sql] CONNECT:[ UseTime:0.000591s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:36:52+08:00][sql] SHOW FULL COLUMNS FROM `library` [ RunTime:0.000901s ]
+[2024-11-04T13:36:52+08:00][sql] SELECT 
+            l.*,
+            COUNT(f.id) AS media_count
+         FROM `library` `l` LEFT JOIN `medias` `f` ON `l`.`id`=`f`.`library_id` GROUP BY `l`.`id` [ RunTime:0.000396s ]
+[2024-11-04T13:36:54+08:00][sql] CONNECT:[ UseTime:0.000630s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:36:54+08:00][sql] SHOW FULL COLUMNS FROM `medias` [ RunTime:0.000912s ]
+[2024-11-04T13:36:54+08:00][sql] SELECT 
+              l.*,
+              COUNT(f.id) AS file_count
+           FROM `medias` `l` LEFT JOIN `files` `f` ON `l`.`id`=`f`.`media_id` WHERE  `l`.`library_id` = '1' GROUP BY `l`.`id` [ RunTime:0.000891s ]
+[2024-11-04T13:36:54+08:00][sql] CONNECT:[ UseTime:0.000524s ] mysql:host=127.0.0.1;port=3306;dbname=media;charset=utf8
+[2024-11-04T13:36:54+08:00][sql] SHOW FULL COLUMNS FROM `library` [ RunTime:0.000930s ]
+[2024-11-04T13:36:54+08:00][sql] SELECT 
+            l.*,
+            COUNT(f.id) AS media_count
+         FROM `library` `l` LEFT JOIN `medias` `f` ON `l`.`id`=`f`.`library_id` GROUP BY `l`.`id` [ RunTime:0.000550s ]

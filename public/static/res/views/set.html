@@ -1,0 +1,117 @@
+<style>
+    .layui-form-label {
+        padding: 0 0 9px 0;
+        text-align: left;
+        width: 100%
+    }
+
+    .layui-form-item {
+        margin-bottom: 8px;
+    }
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">接口设置</div>
+                <div class="layui-card-body">
+
+                    <form class="layui-form" lay-filter="seting-filter">
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">
+                                <span class="layui-badge layui-bg-black">阿里云盘Token</span>
+
+
+                            </label>
+                            <input type="text" name="token" lay-verify="required" class="layui-input">
+                            <span class="layui-font-gray">
+                                获取方式：https://aliyuntoken.vercel.app 或
+                                https://alist.nn.ci/zh/guide/drivers/aliyundrive.html
+                            </span>
+                        </div>
+
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">
+                                <span class="layui-badge layui-bg-black">刷新令牌</span>
+                            </label>
+                            <input type="text" name="open_token" lay-verify="required" class="layui-input">
+                            <span class="layui-font-gray">
+                                获取方式：https://alist.nn.ci/tool/aliyundrive/request.html 或
+                                https://www.voicehub.top/oauth/alipan
+                            </span>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class="layui-badge layui-bg-black">Oauth令牌链接</span>
+                            </label>
+                            <input type="text" name="open_token_url" lay-verify="required" class="layui-input">
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class="layui-badge layui-bg-black">转存目录 file_id</span>
+                            </label>
+                            <input type="text" name="parent_file_id" lay-verify="required" class="layui-input">
+                            <span class="layui-font-gray">
+                                文件临时存放目录 计划任务定期删除
+                            </span>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class="layui-badge layui-bg-black">用户 drive_id</span>
+                            </label>
+                            <input type="text" name="drive_id" lay-verify="required" class="layui-input">
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class="layui-badge layui-bg-black">TMDB API KEY</span>
+                            </label>
+                            <input type="text" name="tmdb_api_key" lay-verify="required" class="layui-input">
+
+                        </div>
+                        <div class="layui-form-item">
+                            <button type="submit" class="layui-btn layui-bg-blue" lay-submit
+                                lay-filter="seting">保存</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    layui.use(function () {
+        let $ = layui.$;
+        let form = layui.form;
+
+        $.ajax({
+            url: '/system/seting',
+            success: function (result) {
+                form.val('seting-filter', result);
+            }
+        });
+
+        form.on('submit(seting)', function (data) {
+            var field = data.field; // 获取表单字段值
+            $.ajax({
+                url: '/system/seting',
+                data: field,
+                type: 'POST',
+                success: function (result) {
+                    if (result.code == 0) {
+                        layer.msg('保存成功', { icon: 1 });
+                    }
+                }
+            });
+            return false; // 阻止默认 form 跳转
+        });
+
+    });
+</script>

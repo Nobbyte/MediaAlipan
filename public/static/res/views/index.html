@@ -1,0 +1,169 @@
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">媒体库管理</div>
+                <div class="layui-card-body">
+
+                    <table class="layui-hide" id="library" lay-filter="library"></table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/html" id="library_toolbar">
+    <div class="layui-btn-container">
+      <button class="layui-btn layui-bg-blue" lay-event="add_library">添加媒体库</button>
+    </div>
+</script>
+
+<script type="text/html" id="library_tool">
+    <div class="layui-clear-space">
+      <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="delete">
+        <span class="layui-icon layui-icon-delete"></span> 删除
+      </a>
+    </div>
+</script>
+
+<script type="text/html" id="library_form">
+  <form class="layui-form" style="padding:20px 20px 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">媒体库名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">媒体库类型</label>
+        <div class="layui-input-block">
+          <select name="interest" lay-filter="type" lay-verify="required">
+            <option value=""></option>
+            <option value="1">电影</option>
+            <option value="2">剧集/综艺</option>
+          </select>
+        </div>
+      </div>  
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea name="notes" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn layui-bg-blue" lay-submit lay-filter="add_library_submit">创建</button>
+        </div>
+    </div>
+</form>
+</script>
+
+<script>
+    layui.use(function () {
+        let $ = layui.$;
+        let table = layui.table;
+        let form = layui.form;
+
+        let library_form_templete = document.getElementById('library_form').innerHTML;
+
+        table.render({
+            elem: '#library',
+            toolbar: '#library_toolbar',
+            defaultToolbar: [],
+            url: '/library/list',
+            cols: [[
+                { field: 'name', title: '名称', edit: 'text' },
+                {
+                    field: 'type', title: '类型', templet: function (d) {
+                        console.log(d.type)
+                        let type;
+                        switch (d.type) {
+                            case 1:
+                                type = '电影'
+                                break;
+                            case 2:
+                                type = '电视剧'
+                                break;
+                            default:
+                                type = '未知'
+                                break;
+                        }
+                        return type
+                    }
+                },
+                {
+                    field: 'status', title: '状态', templet: function (d) {
+                        if (d.status) {
+                            return '<span class="layui-badge layui-bg-blue">正常</span>'
+                        } else {
+                            return '<span class="layui-badge">禁用</span>'
+                        }
+                    }
+                },
+                {
+                    field: 'media_count', title: '影片数', width: 100
+                },
+                { field: 'notes', title: '备注', edit: 'text' },
+                { title: '管理', templet: '#library_tool' },
+            ]]
+        });
+
+        // 单元格编辑事件
+        table.on('edit(library)', function (obj) {
+            var data = obj.data; // 得到所在行所有键值
+            $.post('/library/edit', data, function (data, status) {
+                if (data.code == 0) {
+                    layer.msg(`更新了${data.ret}条数据`, { icon: 1 });
+                }
+                table.reloadData('library')
+            });
+        });
+
+        // 触发单元格工具事件
+        table.on('tool(library)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'delete':
+                    layer.msg('删除操作');
+                    break;
+            };
+        });
+
+        // 工具栏事件
+        table.on('toolbar(library)', function (obj) {
+            var id = obj.config.id;
+            var checkStatus = table.checkStatus(id);
+            var othis = lay(this);
+            switch (obj.event) {
+                case 'add_library':
+                    layer.open({
+                        type: 1,
+                        area: ['400px', '360px'],
+                        title: '添加媒体库',
+                        shadeClose: true,
+                        anim: 0,
+                        success: function (layero, index, that) {
+                            form.render()
+                            // 提交事件
+                            form.on('submit(add_library_submit)', function (data) {
+                                var field = data.field;
+                                $.post('/library/create', field, function (data, status) {
+                                    layer.msg(`成功创建媒体库`, { icon: 1 });
+                                });
+                                return false; // 阻止默认 form 跳转
+                            });
+                        },
+                        content: library_form_templete
+                    });
+                    break;
+
+            };
+        });
+
+
+
+
+    });
+</script>

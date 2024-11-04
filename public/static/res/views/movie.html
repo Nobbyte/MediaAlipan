@@ -1,0 +1,534 @@
+<style>
+    /* 定义弹窗样式 */
+    .movie-info-popup {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #1a1a1a;
+        /* 黑色背景 */
+        color: white;
+        /* 文字颜色 */
+    }
+
+    .movie-info-popup .movie-cover {
+        width: 150px;
+        /* 设置图片宽度 */
+        height: auto;
+        margin-right: 20px;
+    }
+
+    .movie-info-popup .movie-details {
+        flex-grow: 1;
+    }
+
+    .movie-info-popup .movie-name {
+        font-size: 1.8em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .movie-info-popup .movie-summary {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .movie-info-popup .movie-release-date {
+        font-size: 1em;
+        color: #999;
+    }
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header" id="library_manager_title">媒体库管理</div>
+                <div class="layui-card-body">
+
+                    <table class="layui-hide" id="media" lay-filter="media"></table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/html" id="media_toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-bg-blue" lay-event="quick_add_media">一键添加</button>
+        <button class="layui-btn layui-bg-blue" lay-event="add_media">添加媒体</button>
+    </div>
+  </script>
+
+<script type="text/html" id="media_form">
+    <form class="layui-form"style="padding:20px 20px 0 0;">
+      <div class="layui-form-item">
+          <label class="layui-form-label">媒体名称</label>
+          <div class="layui-input-block">
+            <input name="name" placeholder="请输入媒体名称" class="layui-input" id="input-search-media">
+          </div>
+      </div>
+  </form>
+  <div style="padding: 20px;">
+  <table class="layui-hide" id="media_search" lay-filter="media_search"></table>
+</div>
+  </script>
+
+<script>
+    var media_id;
+    layui.use(function () {
+        let table = layui.table;
+        let router = layui.router();
+        let form = layui.form;
+        var dropdown = layui.dropdown;
+        var $ = layui.$;
+
+        let library_info = JSON.parse(atob(router.search.info));
+
+        let library_manager_title = document.getElementById('library_manager_title')
+
+        library_manager_title.innerText = library_info.name
+
+        let library_id = library_info.id
+
+        let media_form_templete = document.getElementById('media_form').innerHTML;
+
+
+
+        media_table()
+
+        function media_table() {
+            table.render({
+                elem: '#media',
+                toolbar: '#media_toolbar',
+                defaultToolbar: [],
+                url: '/medias/list/library_id/' + library_id,
+                cols: [[
+                    { field: 'id', title: 'ID', width: 60 },
+                    { field: 'name', title: '名称', width: 200 },
+                    {
+                        title: 'TMDB', width: 100, templet: function (d) {
+                            data = JSON.parse(d.tmdb)
+                            return data.id
+                        }
+                    },
+                    {
+                        title: '介绍', templet: function (d) {
+                            data = JSON.parse(d.tmdb)
+                            return data.overview
+                        }
+                    },
+                    { field: 'file_count', title: '文件数', width: 100 },
+                    {
+                        title: '操作', fixed: 'right', templet: `
+                    <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="manager">
+                        管理文件</a>`
+                    }
+                ]]
+            });
+
+
+
+
+            table.on('tool(media)', function (obj) {
+                var data = obj.data;
+                switch (obj.event) {
+                    case 'manager':
+                        open_file_manager(data)
+                        break;
+                };
+            });
+
+            function all_share_files_table() {
+                table.render({
+                    elem: '#all_share_files_manager',
+                    toolbar: `<div class="layui-btn-container">
+      <button class="layui-btn layui-bg-blue" lay-event="add_all">全部加入</button>
+      <button class="layui-btn layui-bg-blue" lay-event="add_select">加入选中</button>
+    </div>`,
+                    defaultToolbar: [],
+                    data: result,
+                    cols: [[
+                        { type: 'checkbox', fixed: 'left' },
+                        { field: 'share_id', title: '分享ID', width: 100 },
+                        { field: 'file_id', title: '文件ID', width: 200 },
+                        { field: 'name', title: '文件名称' },
+                        { field: 'file_extension', title: '格式', width: 50 },
+                        {
+                            field: 'size', title: '文件大小', width: 100, templet: function (d) {
+                                return bytesToSize(Number(d.size))
+                            }
+                        },
+                        { field: 'resolution', title: '分辨率', width: 80 },
+                        { field: 'updated_at', title: '更新时间', width: 120 },
+                    ]]
+                });
+
+                table.on('toolbar(all_share_files_manager)', function (obj) {
+                    var id = obj.config.id;
+                    var checkStatus = table.checkStatus(id);
+                    var othis = lay(this);
+                    switch (obj.event) {
+                        case 'add_all':
+                            var getData = table.getData(id);
+                            files_insertAll(getData, media_id, share_files_open)
+                            break;
+                        case 'add_select':
+                            files_insertAll(checkStatus.data, media_id, share_files_open)
+                            break;
+                    };
+                });
+
+            }
+
+            table.on('toolbar(media)', function (obj) {
+                var id = obj.config.id;
+                var checkStatus = table.checkStatus(id);
+                var othis = lay(this);
+                switch (obj.event) {
+                    case 'quick_add_media':
+                        layer.prompt({
+                            title: '请输入阿里云盘分享目录地址',
+                            formType: 2
+                        }, function (text, index) {
+                            layer.close(index)
+                            window.share_url = text;
+                            $.ajax({
+                                url: '/alipan/get_all_share_files?url=' + text,
+                                success: function (result) {
+                                    if (result.list.length >= 1) {
+                                        add_media(result.name, result.list)
+                                    } else {
+                                        layer.alert(`${result.name}<br>${share_url}`, {
+                                            icon: 2,
+                                            title: '没有找到媒体文件'
+                                        })
+                                    }
+
+                                }
+                            });
+                        });
+                        break;
+                    case 'add_media':
+                        add_media()
+                        break;
+
+                };
+            });
+        }
+
+
+
+        function add_media(name = '', list = []) {
+            layer.open({
+                type: 1,
+                area: ['60%', '60%'],
+                title: '添加媒体库',
+                shadeClose: true,
+                anim: 0,
+                success: function (layero, index, that) {
+                    table.render({
+                        elem: '#media_search',
+                        defaultToolbar: [],
+                        data: [],
+                        cols: [[
+                            //{ field: 'poster_path', title: '封面', width: 200 },
+                            { field: 'id', title: 'TMDB ID', width: 100 },
+                            { field: 'title', title: '名称', width: 200 },
+                            { field: 'overview', title: '介绍' },
+                            { field: 'release_date', title: '发布时间', width: 150 },
+                            {
+                                title: '操作', width: 80, fixed: 'right', templet:
+                                    `<a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="add">添加</a>`
+                            }
+                        ]]
+                    });
+                    media_search_table(list)
+                    media_search(name)
+
+                },
+                content: media_form_templete
+            });
+        }
+
+
+
+        function media_search_table(list = []) {
+            table.on('tool(media_search)', function (obj) {
+                var data = obj.data;
+                switch (obj.event) {
+                    case 'add':
+                        // 创建电影介绍的HTML内容
+                        var movieContent = `
+                        <div class="movie-info-popup">
+                            <img class="movie-cover" src="https://image.tmdb.org/t/p/w220_and_h330_face/${data.poster_path}" alt="电影封面">
+                            <div class="movie-details">
+                                <div class="movie-name">${data.title}</div>
+                                <div class="movie-summary">${data.overview}</div>
+                                <div class="movie-release-date">发布时间：${data.release_date}</div>
+                            </div>
+                        </div>
+                        `;
+                        // 打开弹窗
+                        layer.open({
+                            type: 1,
+                            title: `是否要添加【${data.title}】`,
+                            area: ['500px', 'auto'],
+                            content: movieContent,
+                            btn: ['添加到媒体库'],
+                            btn1: function (index, layero, that) {
+                                let year = data.release_date.split('-')[0];
+                                let name = data.title + ` (${year})`;
+                                let add_data = {
+                                    name: name,
+                                    library_id: library_id,
+                                    tmdb: JSON.stringify(data)
+                                }
+                                $.post('/medias/create_get_id', add_data, function (result, status) {
+                                    if (result.code == 0) {
+                                        let data = {
+                                            id: result.id,
+                                            name: name
+                                        }
+
+                                        if (list.length !== 0) {
+                                            window.media_id = data.id
+                                            layer.closeAll();
+                                            open_file_manager(data);
+                                            files_insertAll(list);
+
+                                        } else {
+                                            layer.closeAll();
+                                            layer.msg(`添加成功，下面将跳转媒体文件管理`, {
+                                                icon: 1, end: function () {
+                                                    open_file_manager(data);
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                    table.reloadData('media')
+                                });
+                            },
+                        });
+                        break;
+                };
+            });
+        }
+
+        function open_file_manager(data) {
+            layer.open({
+                type: 1,
+                title: data.name,
+                area: ['60%', '60%'],
+                shade: 0.3,
+                shadeClose: true,
+                content: `
+                    <div style="padding: 20px;">
+                        <table class="layui-hide" id="file_manager" lay-filter="file_manager"></table>
+                    </div>`,
+                success: function () {
+                    media_id = data.id
+                    file_manager_table()
+                }
+            });
+        }
+
+        function file_manager_table() {
+            table.render({
+                elem: '#file_manager',
+                toolbar: `<div class="layui-btn-container">
+      <button class="layui-btn layui-bg-blue" lay-event="add_quick_file">快速添加</button>
+      <!--<button class="layui-btn layui-bg-blue" lay-event="add_file">添加文件</button>-->
+    </div>`,
+                defaultToolbar: [],
+                url: '/files/list/media_id/' + media_id,
+                cols: [[
+                    { field: 'share_id', title: '分享ID', width: 100 },
+                    { field: 'file_id', title: '文件ID', width: 200 },
+                    { field: 'name', title: '文件名称' },
+                    {
+                        field: 'size', title: '文件大小', width: 100, templet: function (d) {
+                            return bytesToSize(Number(d.size))
+                        }
+                    },
+                    { field: 'resolution', title: '分辨率', width: 80 },
+                    { field: 'updated_at', title: '更新时间', width: 120 },
+                    {
+                        title: '操作', width: 100, fixed: 'right', templet: `
+                    <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="manager">
+                        删除</a>`
+                    }
+                ]]
+            });
+            table.on('toolbar(file_manager)', function (obj) {
+                var id = obj.config.id;
+                var checkStatus = table.checkStatus(id);
+                var othis = lay(this);
+                switch (obj.event) {
+                    case 'add_quick_file':
+                        layer.prompt({
+                            title: '请输入阿里云盘分享目录地址',
+                            formType: 2
+                        }, function (text, index) {
+                            layer.close(index)
+                            window.share_url = text;
+                            $.ajax({
+                                url: '/alipan/get_share_files?url=' + text,
+                                success: function (result) {
+                                    open_share_files(result)
+                                }
+                            });
+                        });
+                        break;
+
+                };
+            });
+        }
+
+        function open_share_files(result) {
+            layer.open({
+                type: 1,
+                title: data.name,
+                area: ['60%', '60%'],
+                content: `<div style="padding: 20px;">
+                    <table class="layui-hide" id="share_files_manager" lay-filter="share_files_manager"></table>
+                </div>`,
+                success: function (layero, index, that) {
+                    window.share_files_open = index
+                    share_files_table(result, share_files_open)
+                }
+            });
+        }
+
+        function bytesToSize(bytes) {
+            const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const factor = 1024; // 换算基数
+            let i = 0;
+            while (bytes >= factor && i < units.length - 1) {
+                bytes /= factor;
+                i++;
+            }
+            return `${bytes.toFixed(2)} ${units[i]}`;
+        }
+
+        function share_files_table(result, share_files_open) {
+            table.render({
+                elem: '#share_files_manager',
+                toolbar: `<div class="layui-btn-container">
+      <button class="layui-btn layui-bg-blue" lay-event="add_all">全部加入</button>
+      <button class="layui-btn layui-bg-blue" lay-event="add_select">加入选中</button>
+    </div>`,
+                defaultToolbar: [],
+                data: result,
+                cols: [[
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'share_id', title: '分享ID', width: 100 },
+                    { field: 'file_id', title: '文件ID', width: 200 },
+                    { field: 'name', title: '文件名称' },
+                    { field: 'file_extension', title: '格式', width: 50 },
+                    {
+                        field: 'size', title: '文件大小', width: 100, templet: function (d) {
+                            return bytesToSize(Number(d.size))
+                        }
+                    },
+                    { field: 'resolution', title: '分辨率', width: 80 },
+                    { field: 'updated_at', title: '更新时间', width: 120 },
+                ]]
+            });
+
+            table.on('toolbar(share_files_manager)', function (obj) {
+                var id = obj.config.id;
+                var checkStatus = table.checkStatus(id);
+                var othis = lay(this);
+                switch (obj.event) {
+                    case 'add_all':
+                        var getData = table.getData(id);
+                        files_insertAll(getData, share_files_open)
+                        break;
+                    case 'add_select':
+                        files_insertAll(checkStatus.data, share_files_open)
+                        break;
+                };
+            });
+
+        }
+
+        function files_insertAll(save_data, share_files_open_index = null) {
+            let share_pwd;
+            var match = share_url.replace(/^(https?:\/\/)/, '').match(/:([^:]+)$/);
+            if (match) {
+                share_pwd = match[1];
+            } else {
+                share_pwd = ''
+            }
+            save_data.forEach(item => {
+                item.share_pwd = share_pwd
+                item.library_id = library_id;
+                item.media_id = media_id;
+            });
+            $.ajax({
+                url: '/files/insertAll',
+                type: 'POST',
+                data: JSON.stringify(save_data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.code == 0) {
+                        layer.msg(`添加了${response.ret}条数据`, { icon: 1 });
+                        if (share_files_open_index !== null) {
+                            layer.close(share_files_open_index)
+                        }
+                    }
+                    table.reloadData('media')
+                    table.reloadData('file_manager')
+                }
+            });
+        }
+
+        function media_search(name = '') {
+            let input = $('#input-search-media');
+            input.val(name);
+            let isComposing = false;
+            input.on('compositionstart', function (e) { isComposing = true });
+            input.on('compositionend', function (e) { isComposing = false; changed() });
+            input.on('input', function (e) { if (!isComposing) { changed() } });
+            if (name != '') {
+                core_search()
+            }
+            let changed = function () {
+                let value = input.val();
+                if (value != '') {
+                    core_search()
+                }
+            }
+            function core_search() {
+                $.ajax({
+                    url: '/tmdb/search_movie?query=' + input.val(),
+                    success: function (result) {
+                        let jsonObject;
+                        try {
+                            jsonObject = JSON.parse(result);
+                        } catch (error) {
+                            layui.alert('搜索出错，请手动输入信息', { icon: 5 });
+                            //return null;
+                        }
+
+                        table.reloadData('media_search', {
+                            data: jsonObject.results
+                        });
+                    }
+                });
+            }
+
+        }
+
+
+
+
+
+
+    });
+</script>
