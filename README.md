@@ -17,9 +17,8 @@
 
 安装好了使用/index/update 生成文件目录（需要先在app/controller/Index.php配置生成的位置）
 
-
-![1](https://github.com/user-attachments/assets/66563f99-0338-4f11-992d-0c850c60fb0b)
-![2](https://github.com/user-attachments/assets/d37b98e8-03ca-40e7-b804-b19748279c7c)
-![3](https://github.com/user-attachments/assets/e7776192-ec15-49cb-b7f6-fdb86e5031ce)
-![4](https://github.com/user-attachments/assets/c57c12d2-b270-4093-94b4-c0a750293c46)
-![5](https://github.com/user-attachments/assets/b548affd-759c-4ba6-8ad1-b7ec74707114)
+![1](https://github.com/user-attachments/assets/dcfcad10-0253-4d31-9b2d-3761b5f3b2da)
+![2](https://github.com/user-attachments/assets/0686a65f-64a4-4569-9608-cfe1bff3b4ca)
+![3](https://github.com/user-attachments/assets/b7e4e952-aae4-4c4e-a165-74e2d918a152)
+![4](https://github.com/user-attachments/assets/98c16335-5751-4333-b443-a88a06e549b9)
+![5](https://github.com/user-attachments/assets/48a4ba56-2fb2-4c56-a352-72e0ef3736ab)
